@@ -83,7 +83,8 @@
   if (!navigator.onLine) {
     showMsg('offline');
   } else {
-    frame.src = APP_URL;
+    // Chuyển tiếp tham số trên đường link (VD mã điểm danh ?dd=...) vào phần mềm
+    frame.src = APP_URL + (location.search || '');
     var loaded = false;
     frame.addEventListener('load', function(){ loaded = true; setTimeout(function(){ splash.classList.add('hide'); }, 600); });
     setTimeout(function(){ if (!loaded) document.getElementById('splashTxt').textContent = 'Đang kết nối máy chủ, vui lòng đợi…'; }, 6000);
