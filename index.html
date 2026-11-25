@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lớp cô Hà Trịnh</title>
+<meta name="description" content="Học tập, bài tập, điểm danh và học phí — Lớp cô Hà Trịnh">
+<meta name="theme-color" content="#1f6f99">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lớp cô Hà">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+  html,body{margin:0;height:100%;background:#fff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+  #app{position:fixed;top:env(safe-area-inset-top);left:0;right:0;bottom:0;width:100%;height:calc(100% - env(safe-area-inset-top));border:0;background:#fff}
+  #splash{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    background:linear-gradient(160deg,#2b8cc4,#174f6e);color:#fff;transition:opacity .35s}
+  #splash img{width:112px;height:112px;border-radius:26px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  #splash .t{font-size:1.4rem;font-weight:700}
+  #splash .s{opacity:.85;font-size:.95rem}
+  .dots span{display:inline-block;width:8px;height:8px;margin:0 3px;border-radius:50%;background:#fff;animation:b 1s infinite}
+  .dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
+  @keyframes b{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+  #splash.hide{opacity:0;pointer-events:none}
+  .msg{position:fixed;inset:0;z-index:6;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:#fff;color:#1e293b}
+  .msg.show{display:flex}
+  .btn{background:#1f6f99;color:#fff;border:0;border-radius:999px;padding:12px 26px;font-size:1rem;font-weight:600;cursor:pointer;text-decoration:none}
+  .btn.ghost{background:#fff;color:#1f6f99;border:1px solid #cbd5e1}
+  #install{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:7;display:none;align-items:center;gap:12px;
+    background:#0f172a;color:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.3);font-size:.92rem}
+  #install.show{display:flex}
+  #install img{width:40px;height:40px;border-radius:10px}
+  #install .tx{flex:1;line-height:1.35}
+  #install .x{background:none;border:0;color:#94a3b8;font-size:1.5rem;cursor:pointer;padding:0 4px}
+  #install .btn{padding:8px 16px;font-size:.9rem}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <img src="icon-192.png" alt="">
+  <div class="t">Lớp cô Hà Trịnh</div>
+  <div class="dots"><span></span><span></span><span></span></div>
+  <div class="s" id="splashTxt">Đang mở ứng dụng…</div>
+</div>
+
+<iframe id="app" title="Lớp cô Hà Trịnh" allow="microphone; autoplay; clipboard-write"></iframe>
+
+<div class="msg" id="offline">
+  <div style="font-size:3rem">📶</div>
+  <b style="font-size:1.15rem">Không có kết nối mạng</b>
+  <div style="color:#64748b">Hãy bật Wi-Fi hoặc dữ liệu di động rồi thử lại.</div>
+  <button class="btn" onclick="location.reload()">Thử lại</button>
+</div>
+
+<div class="msg" id="slow">
+  <div style="font-size:3rem">⏳</div>
+  <b style="font-size:1.15rem">Mạng đang chậm</b>
+  <div style="color:#64748b">Ứng dụng tải lâu hơn bình thường.</div>
+  <button class="btn" onclick="location.reload()">Tải lại</button>
+  <a class="btn ghost" id="openDirect" target="_blank" rel="noopener">Mở bằng trình duyệt</a>
+</div>
+
+<div id="install">
+  <img src="icon-192.png" alt="">
+  <div class="tx" id="installTxt"><b>Cài ứng dụng lên điện thoại</b><br>Mở nhanh từ màn hình chính, toàn màn hình.</div>
+  <button class="btn" id="installBtn">Cài đặt</button>
+  <button class="x" id="installClose" aria-label="Đóng">×</button>
+</div>
+
+<script>
+  // Địa chỉ phần mềm (Google Apps Script). Khi đổi bản triển khai thì chỉ cần sửa dòng này.
+  var APP_URL = 'https://script.google.com/macros/s/AKfycbydYol1Z8nRxktWBVGxWE6Wj-IyFHlh1Y-vv7G2hY7R7hXIV8zRUWZU2bjnDzLKDWXn/exec';
+
+  var frame = document.getElementById('app'), splash = document.getElementById('splash');
+  document.getElementById('openDirect').href = APP_URL;
+
+  function showMsg(id){ document.getElementById(id).classList.add('show'); splash.classList.add('hide'); }
+
+  if (!navigator.onLine) {
+    showMsg('offline');
+  } else {
+    frame.src = APP_URL;
+    var loaded = false;
+    frame.addEventListener('load', function(){ loaded = true; setTimeout(function(){ splash.classList.add('hide'); }, 600); });
+    setTimeout(function(){ if (!loaded) document.getElementById('splashTxt').textContent = 'Đang kết nối máy chủ, vui lòng đợi…'; }, 6000);
+    setTimeout(function(){ if (!loaded) showMsg('slow'); }, 30000);
+  }
+  window.addEventListener('offline', function(){ showMsg('offline'); });
+  window.addEventListener('online', function(){ if (document.getElementById('offline').classList.contains('show')) location.reload(); });
+
+  // Bộ phận chạy nền (cho phép cài app và mở nhanh)
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+
+  // Gợi ý cài app (chỉ hiện khi đang mở bằng trình duyệt, chưa cài)
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  var dismissed = false; try { dismissed = localStorage.getItem('installDismissed') === '1'; } catch(e) {}
+  var bar = document.getElementById('install'), deferred = null;
+  function closeBar(){ bar.classList.remove('show'); try { localStorage.setItem('installDismissed','1'); } catch(e) {} }
+  document.getElementById('installClose').onclick = closeBar;
+
+  if (!standalone && !dismissed) {
+    // Android / máy tính (Chrome, Edge, Cốc Cốc…): có nút cài trực tiếp
+    window.addEventListener('beforeinstallprompt', function(e){
+      e.preventDefault(); deferred = e; bar.classList.add('show');
+    });
+    document.getElementById('installBtn').onclick = function(){
+      if (!deferred) return;
+      deferred.prompt();
+      deferred.userChoice.then(function(){ deferred = null; bar.classList.remove('show'); });
+    };
+    // iPhone / iPad (Safari): không có nút cài, hướng dẫn thao tác
+    var ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (ios) {
+      document.getElementById('installTxt').innerHTML = '<b>Cài app lên iPhone:</b> bấm nút <b>Chia sẻ</b> ⬆️ ở thanh dưới, rồi chọn <b>“Thêm vào MH chính”</b>.';
+      document.getElementById('installBtn').style.display = 'none';
+      setTimeout(function(){ bar.classList.add('show'); }, 2500);
+    }
+  }
+  window.addEventListener('appinstalled', function(){ bar.classList.remove('show'); });
+</script>
+</body>
+</html>
